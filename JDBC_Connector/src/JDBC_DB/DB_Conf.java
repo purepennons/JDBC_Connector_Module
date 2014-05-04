@@ -15,7 +15,7 @@ public class DB_Conf {
 	
 	//constructor
 	public DB_Conf(){
-	
+		//do nothing
 	}
 	
 	public DB_Conf(String driver, String type, String d, String port, String dbName, String usr, String pw){

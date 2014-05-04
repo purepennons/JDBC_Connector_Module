@@ -55,16 +55,116 @@ public class DB_Connect {
 	}
 	
 	//main functions
-	public boolean init() throws ClassNotFoundException, SQLException{
-		if(this.conf != null){
-			Class.forName(this.conf.getJDBC_Driver());
-			this.conn = DriverManager.getConnection(this.conf.getURL(), this.conf.getUsername(), this.conf.getPassword());
-			return true;
+	public boolean init(){
+		boolean isSuccess = false;
+		try{
+			if(this.conf != null){
+				Class.forName(this.conf.getJDBC_Driver());
+				this.conn = DriverManager.getConnection(this.conf.getURL(), this.conf.getUsername(), this.conf.getPassword());
+				isSuccess = true;
+			}
+		}catch(ClassNotFoundException e){
+			System.err.println("Exception: Can not find dirver.");
+		}catch(SQLException e){
+			System.err.println("Exception:" + e.toString());
 		}
-		return false;
+		return isSuccess;
 	}
 	
+	public boolean statementUpdate(String sql){
+		boolean isSuccess = false;
+		try{
+			this.st = this.conn.createStatement();
+			this.st.executeUpdate(sql);
+			isSuccess = true;
+		}catch(SQLException e){
+			System.err.println("Exception:" + e.toString());
+		}finally{
+			try{
+				this.st.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+		return isSuccess;
+	}
 	
+	public ResultSet statementQuery(String sql){
+		try{
+			this.st = this.conn.createStatement();
+			this.rs = this.st.executeQuery(sql);
+		}catch(SQLException e){
+			System.err.println("Exception:" + e.toString());			
+		}finally{
+			try{
+				this.rs.close();
+				this.st.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+		return this.rs;
+	}
+	
+	public boolean preparedStatementUpdate(String sql, String[] sqlArgs){
+		boolean isSuccess = false;
+		try{
+			this.pst = this.conn.prepareStatement(sql);
+			for(int i=0;i<sqlArgs.length;i++){
+				this.pst.setString(i+1, sqlArgs[i]);
+			}
+			this.pst.executeUpdate();
+			isSuccess = true;
+		}catch(SQLException e){
+			System.err.println("Exception:" + e.toString());						
+		}finally{
+			try{
+				this.pst.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+		return isSuccess;
+	}
+	
+	public ResultSet preparedStatementQuery(String sql, String[] sqlArgs){
+		try{
+			this.pst = this.conn.prepareStatement(sql);
+			for(int i=0;i<sqlArgs.length;i++){
+				this.pst.setString(i+1, sqlArgs[i]);
+			}
+			this.rs = this.pst.executeQuery();
+		}catch(SQLException e){
+			System.err.println("Exception:" + e.toString());									
+		}finally{
+			try{
+				this.rs.close();
+				this.pst.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+		return this.rs;
+	}
+	
+	public void close(){
+		try{
+			if(this.rs != null){
+				this.rs.close();
+				this.rs = null;
+			}
+			if(this.st != null){
+				this.st.close();
+				this.st = null;
+			}
+			if(this.conn != null){
+				this.conn.close();
+				this.conn = null;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();			
+		}
+	}
 	
 //	public static void main(String[] args){
 //		DB_Conf conf = new DB_Conf();
