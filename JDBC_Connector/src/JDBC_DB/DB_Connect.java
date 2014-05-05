@@ -60,13 +60,16 @@ public class DB_Connect {
 		try{
 			if(this.conf != null){
 				Class.forName(this.conf.getJDBC_Driver());
+				System.out.println(this.conf.getURL());
 				this.conn = DriverManager.getConnection(this.conf.getURL(), this.conf.getUsername(), this.conf.getPassword());
+				System.out.println("Database connects success.");
 				isSuccess = true;
 			}
 		}catch(ClassNotFoundException e){
 			System.err.println("Exception: Can not find dirver.");
 		}catch(SQLException e){
 			System.err.println("Exception:" + e.toString());
+			e.printStackTrace();
 		}
 		return isSuccess;
 	}
@@ -96,12 +99,7 @@ public class DB_Connect {
 		}catch(SQLException e){
 			System.err.println("Exception:" + e.toString());			
 		}finally{
-			try{
-				this.rs.close();
-				this.st.close();
-			}catch(SQLException e){
-				e.printStackTrace();
-			}
+
 		}
 		return this.rs;
 	}
@@ -114,6 +112,7 @@ public class DB_Connect {
 				this.pst.setString(i+1, sqlArgs[i]);
 			}
 			this.pst.executeUpdate();
+			this.pst.clearParameters();
 			isSuccess = true;
 		}catch(SQLException e){
 			System.err.println("Exception:" + e.toString());						
@@ -134,15 +133,10 @@ public class DB_Connect {
 				this.pst.setString(i+1, sqlArgs[i]);
 			}
 			this.rs = this.pst.executeQuery();
+			this.pst.clearParameters();
 		}catch(SQLException e){
 			System.err.println("Exception:" + e.toString());									
 		}finally{
-			try{
-				this.rs.close();
-				this.pst.close();
-			}catch(SQLException e){
-				e.printStackTrace();
-			}
 		}
 		return this.rs;
 	}
@@ -161,14 +155,9 @@ public class DB_Connect {
 				this.conn.close();
 				this.conn = null;
 			}
+			System.out.println("Database was disconnected.");
 		}catch(SQLException e){
 			e.printStackTrace();			
 		}
 	}
-	
-//	public static void main(String[] args){
-//		DB_Conf conf = new DB_Conf();
-//		System.out.println(conf.getURL());
-//	}
-
 }

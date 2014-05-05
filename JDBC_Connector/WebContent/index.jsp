@@ -4,6 +4,7 @@
 <%@ page import="java.sql.Connection"%>
 <%@ page import="java.sql.Statement"%>
 <%@ page import="java.sql.ResultSet"%>
+<%@ page import="JDBC_DB.DB_Connect"%>
 <jsp:directive.page import="java.sql.Date" />
 <jsp:directive.page import="java.sql.Timestamp" />
 <jsp:directive.page import="java.sql.SQLException"/>
@@ -42,20 +43,7 @@
 	ResultSet rs = null;
 	
 	try{
-		// 註冊 MySQL 驅動. 也可以使用下面兩種方式的任一種
-		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-		//new com.mysql.jdbc.Driver();
-		//Class.forName("com.mysql.jdbc.Driver").newInstance();
-		
-		// 獲得資料庫連接。 三個參數分別為 連接URL，使用者名稱，密碼
-		conn = DriverManager.getConnection(
-							"jdbc:mysql://localhost:3306/nblog10", 
-							"nblogTW", 
-							"nblogTW");
-		
-		// 獲得 Statement。 Statement 對像用於執行 SQL。相當於控制台。
-		stmt = conn.createStatement();
-		
+		DB_Connect db = new DB_Connect();
 		// 使用 Statement 執行 SELECT 敘述。傳回結果集。
 		rs = stmt.executeQuery("select * from n2_member");	
 %>

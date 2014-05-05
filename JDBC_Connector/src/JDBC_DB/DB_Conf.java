@@ -5,12 +5,12 @@ public class DB_Conf {
 	//parameters setup
 	private String JDBC_Driver = "com.mysql.jdbc.Driver";
 	private String DB_TYPE = "mysql";
-	private String domain = "localhost";
-	private String port = "8889";
-	private String useDB = "bill";
-	private String username = "local";
+	private String domain = "127.0.0.1";
+	private String port = "3306";
+	private String useDB = "Bill";
+	private String username = "root";
 	private String password = "123";
-	private String encoding = "UTF8";
+	private String encoding = "utf-8";
 	private boolean isUnicode = true;
 	
 	//constructor
